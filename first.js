@@ -1,89 +1,66 @@
-let buttons = document.querySelectorAll("button");
-let screen = document.querySelector(".screen");
+let userScore = 0;
+let compScore = 0;
 
+const choices = document.querySelectorAll(".choice");
+const msg = document.querySelector("#msg");
 
-buttons.forEach((button) => {
-    button.addEventListener("click", () => {
-        let buttonText = button.innerText;
-        if(buttonText === "DEL") {
-            let screenText = screen.textContent.slice(0, -1);
-            screen.textContent = screenText;
-            return;
-        }
-        else if(buttonText === "AC") {
-            screen.textContent = "";
-            return;
-        }
-        else if(buttonText === "=") {
-            let expression = screen.textContent;
+const userScorePara = document.querySelector("#user-score");
+const compScorePara = document.querySelector("#comp-score");
 
-            if(expression.includes("+")) {
-                let numbers = expression.split("+");
-                let firstNum = Number(numbers[0]);
-                let secondNum = Number(numbers[1]);
-                let result = firstNum + secondNum;
-                screen.textContent = result;
-                return;
-            }
-            else if(expression.includes("-")) {
-                let numbers = expression.split("-");
-                let firstNum = Number(numbers[0]);
-                let secondNum = Number(numbers[1]);
-                let result = firstNum - secondNum;
-                screen.textContent = result;
-                return;
-            }
-            else if(expression.includes("*")) {
-                let numbers = expression.split("*");
-                let firstNum = Number(numbers[0]);
-                let secondNum = Number(numbers[1]);
-                let result = firstNum * secondNum;
-                screen.textContent = result;
-                return;
-            }
-            else if(expression.includes("/")) {
-                let numbers = expression.split("/");
-                let firstNum = Number(numbers[0]);
-                let secondNum = Number(numbers[1]);
-                if(secondNum === 0) {
-                    screen.textContent = "Error: Division by zero";
-                    return;
-                }
-                let result = firstNum / secondNum;
-                screen.textContent = result;
-                return;
-            }
-            else if (expression.includes("%")) {
-                let numbers = expression.split("%");
-                let firstNum = Number(numbers[0]);
-                let secondNum = Number(numbers[1]);
-                if(secondNum === 0) {
-                    screen.textContent = "Error: Division by zero";
-                    return;
-                }
-                let result = firstNum % secondNum;
-                screen.textContent = result;
-                return;
-            }
+const gencompChoice = () => {
+    const options = ["rock", "paper", "scissors"];
+    const randomidx = Math.floor(Math.random() * 3);
+    return options[randomidx];
+};
+
+const drawgame = () => {
+    console.log("game was draw");
+    msg.innerText = "Draw"
+};
+
+const showWinner = (userWin, userChoice, compChoice) => {
+    if(userWin) {
+        userScore++;
+        userScorePara.innerText = userScore;
+        console.log("You Win!");
+        msg.innerText = `You Win! ${userChoice} beats ${compChoice}`;
+        msg.style.backgroundColor = "green";
+    } else {
+        compScore++;
+        compScorePara.innerText = compScore;
+        console.log("You Lose!");
+        msg.innerText = `You Lose! ${compChoice} beats Your ${userChoice}`;
+        msg.style.backgroundColor = "red";
+    }
+};
+
+const playGame = (userChoice) => {
+    console.log("user choice =", userChoice);
+    const compChoice = gencompChoice();
+    console.log("comp choice =", compChoice);
+
+    if(userChoice === compChoice) {
+        drawgame();
+    }else {
+        let userWin = true;
+        if(userChoice === "rock") {
+            userWin = compChoice === "paper" ? false : true;
+        } else if(userChoice === "paper") {
+            userWin = compChoice === "scissors" ? false : true;
+        } else {
+            userWin = compChoice === "rock" ? false : true;
         }
-        screen.style.fontSize = "45px";
-        screen.style.color = "white";
-        screen.style.textAlign = "right";
-        screen.style.paddingRight = "10px";
+        showWinner(userWin, userChoice, compChoice);
+
         
+    }
+};
 
-
-        screen.textContent += buttonText;
-        console.log(buttonText);
-    })
+choices.forEach((choice) => {
+    console.log(choice);
+    choice.addEventListener("click", () => {
+        const userChoice = choice.getAttribute("id");
+        console.log("choice was clicked");
+        playGame(userChoice);
+    });
 });
-
-
-
-
-
-
-
-
-
-
